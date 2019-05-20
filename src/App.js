@@ -8,7 +8,8 @@ class App extends Component {
       { name:'Robel', age:28 },
       { name:'Fasika', age:26 },
       { name:'Beka', age:12 }
-    ]
+    ],
+    showPersons: false
   }
 
   switchNameHandler = (newName) => {
@@ -23,21 +24,51 @@ class App extends Component {
     ] })
   }
 
+  nameChangedHandler = (event) => {
+    this.setState( {
+      persons: [
+        { name:'Robel', age:28 },
+        { name: event.target.value, age:25 },
+        { name:'Beka', age:12 }
+      ]
+    } )
+  }
+
+  togglePersonHandler = () => {
+    const doesShow = this.state.showPersons;
+    this.setState({showPersons: !doesShow});
+  }
+
   render () {
+    const style = {
+      backgroundColor: 'white',
+      font: 'inherit',
+      border: '1px solid blue',
+      padding: '8px',
+      cursor: 'pointer'
+    };
+
+    let persons = null;
+
+    if ( this.state.showPersons ) {
+      persons = (
+        <div>
+          {this.state.persons.map(person => {
+            return <Person 
+                    name={person.name} 
+                    age={person.age} />
+          })}
+        </div> 
+      )
+    }
+
     return (
       <div className="App">
         <h1>Hi, I'm a react app.</h1>
-        <button onClick={() => this.switchNameHandler()} >Switch Name</button>
-        <Person 
-        name={this.state.persons[0].name} 
-        age={this.state.persons[0].age} />
-        <Person 
-        name={this.state.persons[1].name} 
-        age={this.state.persons[1].age}
-        click= {this.switchNameHandler.bind(this, 'roba')} >My Hobbies: laughing!</Person>
-        <Person 
-        name={this.state.persons[2].name} 
-        age={this.state.persons[2].age} />
+        <button 
+        style={style}
+        onClick={this.togglePersonHandler} >Toggle Persons</button>
+        {persons}
       </div>
     )
   }
@@ -80,3 +111,37 @@ export default App;
   //     </div>
   //   )
   // }
+
+
+  
+  // {
+  //   this.state.showPersons === true ?
+  //     <div>
+  //       <Person 
+  //       name={this.state.persons[0].name} 
+  //       age={this.state.persons[0].age} />
+  //       <Person 
+  //       name={this.state.persons[1].name} 
+  //       age={this.state.persons[1].age}
+  //       click= {this.switchNameHandler.bind(this, 'roba')} 
+  //       changed= {this.nameChangedHandler}>My Hobbies: laughing!</Person>
+  //       <Person 
+  //       name={this.state.persons[2].name} 
+  //       age={this.state.persons[2].age} />
+  //     </div> 
+  //   : null
+  // }
+
+
+
+  // <Person 
+  //         name={this.state.persons[0].name} 
+  //         age={this.state.persons[0].age} />
+  //         <Person 
+  //         name={this.state.persons[1].name} 
+  //         age={this.state.persons[1].age}
+  //         click= {this.switchNameHandler.bind(this, 'roba')} 
+  //         changed= {this.nameChangedHandler}>My Hobbies: laughing!</Person>
+  //         <Person 
+  //         name={this.state.persons[2].name} 
+  //         age={this.state.persons[2].age} />
