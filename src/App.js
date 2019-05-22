@@ -5,38 +5,56 @@ import Person from './Person/Person';
 class App extends Component {
   state = {
     persons: [
-      { name:'Robel', age:28 },
-      { name:'Fasika', age:26 },
-      { name:'Beka', age:12 }
+      { id: 'asdfg', name:'Robel', age:28 },
+      { id: 'zxcvbn', name:'Fasika', age:26 },
+      { id: 'qwertyu', name:'Beka', age:12 }
     ],
     showPersons: false
   }
 
-  switchNameHandler = (newName) => {
-    // console.log('was clicked')
-    // dont tdo this --> this.state.persons[0].name= "Roberto";
-    // this ^^^ is a bad sytax as it might mutate the state and make it inpure
-    this.setState ({
-      persons: [
-        { name:newName, age:28 },
-        { name:'Fasika', age:25 },
-        { name:'Beka', age:12 }
-    ] })
-  }
+  // switchNameHandler = (newName) => {
+  //   // console.log('was clicked')
+  //   // dont tdo this --> this.state.persons[0].name= "Roberto";
+  //   // this ^^^ is a bad sytax as it might mutate the state and make it inpure
+  //   this.setState ({
+  //     persons: [
+  //       { name:newName, age:28 },
+  //       { name:'Fasika', age:25 },
+  //       { name:'Beka', age:12 }
+  //   ] })
+  // }
 
-  nameChangedHandler = (event) => {
-    this.setState( {
-      persons: [
-        { name:'Robel', age:28 },
-        { name: event.target.value, age:25 },
-        { name:'Beka', age:12 }
-      ]
-    } )
+  nameChangedHandler = (event, id) => {
+    const personIndex = this.state.persons.findIndex(p => {
+      return p.id === id;
+    })
+    const person = {
+      ...this.state.persons[personIndex]
+    };
+    person.name = event.target.value;
+
+    const persons = [...this.state.persons];
+    persons[personIndex] = person;
+
+    this.setState( {persons: persons} )
   }
 
   togglePersonHandler = () => {
     const doesShow = this.state.showPersons;
     this.setState({showPersons: !doesShow});
+  }
+
+  deletePersonHandler = (personIndex) => {
+    // this method has a flaud because it mutates the original state
+    // const persons = this.state.persons;
+
+    // this could be one of the fixes using just regular js
+    //  cont persons = this.state.persons.slice()
+
+    // this is the best way to fix the flaud by using an es6 method called SPREAD OPERATOR
+    const persons = [...this.state.persons];
+    persons.splice(personIndex, 1);
+    this.setState({persons:persons})
   }
 
   render () {
@@ -53,10 +71,13 @@ class App extends Component {
     if ( this.state.showPersons ) {
       persons = (
         <div>
-          {this.state.persons.map(person => {
+          {this.state.persons.map((person, index) => {
             return <Person 
+                    click={() => this.deletePersonHandler(index)}
                     name={person.name} 
-                    age={person.age} />
+                    age={person.age} 
+                    key={person.id}
+                    changed={(event) => this.nameChangedHandler(event, person.id)} />
           })}
         </div> 
       )
