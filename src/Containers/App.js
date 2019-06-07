@@ -1,9 +1,16 @@
 import React, { Component } from 'react';
-import './App.css';
-import Person from './Person/Person';
+import styles from './App.css';
+import Persons from '../Components/Persons/Persons';
+import Cockpit from '../Components/Cockpit/Cockpit'
 // import Radium, { StyleRoot } from 'radium';
+// import ErrorBoundary from '../ErrorBoundary/ErrorBoundary';
 
 class App extends Component {
+  constructor(props){
+    super(props);
+    console.log('[App.js] constructor')
+  }
+
   state = {
     persons: [
       { id: 'asdfg', name:'Robel', age:28 },
@@ -13,17 +20,15 @@ class App extends Component {
     showPersons: false
   }
 
-  // switchNameHandler = (newName) => {
-  //   // console.log('was clicked')
-  //   // dont tdo this --> this.state.persons[0].name= "Roberto";
-  //   // this ^^^ is a bad sytax as it might mutate the state and make it inpure
-  //   this.setState ({
-  //     persons: [
-  //       { name:newName, age:28 },
-  //       { name:'Fasika', age:25 },
-  //       { name:'Beka', age:12 }
-  //   ] })
-  // }
+  static getDerivedStateFromProps(props, state) {
+    console.log('[App.js] getDerivedStateFromProps', props);
+    return state;
+  }
+  componentDidMount() {
+    console.log('[App.js] componentDidMount')
+  }
+
+  
 
   nameChangedHandler = (event, id) => {
     const personIndex = this.state.persons.findIndex(p => {
@@ -46,12 +51,7 @@ class App extends Component {
   }
 
   deletePersonHandler = (personIndex) => {
-    // this method has a flaud because it mutates the original state
-    // const persons = this.state.persons;
-
-    // this could be one of the fixes using just regular js
-    //  cont persons = this.state.persons.slice()
-
+    
     // this is the best way to fix the flaud by using an es6 method called SPREAD OPERATOR
     const persons = [...this.state.persons];
     persons.splice(personIndex, 1);
@@ -59,49 +59,27 @@ class App extends Component {
   }
 
   render () {
-    const style = {
-      backgroundColor: 'green',
-      color: 'white',
-      font: 'inherit',
-      border: '1px solid blue',
-      padding: '8px',
-      cursor: 'pointer',
-      // ':hover' : {
-      //   backgroundColor: 'lightgreen',
-      //   colot: 'black'
-      // }
-    };
+   console.log('[App.js] render')
 
     let persons = null;
 
-    if ( this.state.showPersons ) {
-      persons = (
-        <div>
-          {this.state.persons.map((person, index) => {
-            return <Person 
-                    click={() => this.deletePersonHandler(index)}
-                    name={person.name} 
-                    age={person.age} 
-                    key={person.id}
-                    changed={(event) => this.nameChangedHandler(event, person.id)} />
-          })}
-        </div> 
-      )
 
-      style.backgroundColor = 'red';
-      // style [':hover'] = {
-      //   backgroundColor: 'salmon',
-      //   colot: 'black'
-      // }
+    if ( this.state.showPersons ) {
+      persons = 
+          <Persons 
+          persons = {this.state.persons} 
+          clicked = {this.deletePersonHandler} 
+          changed = {this.nameChangedHandler} />
+        
     }
     
     return (
       // <StyleRoot>
-      <div className="App">
-        <h1>Hi, I'm a react app.</h1>
-        <button 
-        style={style}
-        onClick={this.togglePersonHandler} >Toggle Persons</button>
+      <div className={styles.App}>
+        <Cockpit
+          clicked={this.togglePersonHandler}
+          showPersons={this.state.showPersons}
+          persons={this.state.persons} />
         {persons}
       </div>
     )
@@ -109,6 +87,10 @@ class App extends Component {
 }
 
 export default App;
+
+
+
+
 // export default Radium (App);
 
 
@@ -134,7 +116,17 @@ export default App;
   //     ] })
   //   }
 
-
+// switchNameHandler = (newName) => {
+  //   // console.log('was clicked')
+  //   // dont tdo this --> this.state.persons[0].name= "Roberto";
+  //   // this ^^^ is a bad sytax as it might mutate the state and make it inpure
+  //   this.setState ({
+  //     persons: [
+  //       { name:newName, age:28 },
+  //       { name:'Fasika', age:25 },
+  //       { name:'Beka', age:12 }
+  //   ] })
+  // }
   
   //   return (
   //     <div className="App">
@@ -167,8 +159,23 @@ export default App;
   //   : null
   // }
 
-
-
+ // const style = {
+    //   backgroundColor: 'green',
+    //   color: 'white',
+    //   font: 'inherit',
+    //   border: '1px solid blue',
+    //   padding: '8px',
+    //   cursor: 'pointer',
+    //   // ':hover' : {
+    //   //   backgroundColor: 'lightgreen',
+    //   //   colot: 'black'
+    //   // }
+    // };
+// style.backgroundColor = 'red';
+      // style [':hover'] = {
+      //   backgroundColor: 'salmon',
+      //   colot: 'black'
+      // }
   // <Person 
   //         name={this.state.persons[0].name} 
   //         age={this.state.persons[0].age} />
@@ -180,3 +187,9 @@ export default App;
   //         <Person 
   //         name={this.state.persons[2].name} 
   //         age={this.state.persons[2].age} />
+
+  // this method has a flaud because it mutates the original state
+    // const persons = this.state.persons;
+
+    // this could be one of the fixes using just regular js
+    //  cont persons = this.state.persons.slice()
