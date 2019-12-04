@@ -1,19 +1,38 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import Person from './Person/Person'
 
 
-class Persons extends Component {
-    static getDerivedStateFromProps(props, state){
-        console.log('[Persons.js] getDerivedStateFromPorps')
-        return state
+
+class Persons extends PureComponent {
+    // static getDerivedStateFromProps(props, state){
+    //     console.log('[Persons.js] getDerivedStateFromPorps')
+    //     return state
+    // }
+
+    // shouldComponentUpdate(nextProps, prevState){
+    //     console.log('[Persons.js] getSnashotBeforeUpdate')
+    //     if  (nextProps.persons !== this.props.persons || 
+    //         nextProps.changed !== this.props.changed || 
+    //         nextProps.clicked !== this.props.clicked
+    //     ) {
+    //         return true;
+    //     } else {
+    //         return false;
+    //     }
+    // }
+
+    getSnapshotBeforeUpdate(prevProps, prevState) {
+        console.log('[Persons.js] getSnapshotBeforeUpdate');
+        return { message: 'Snapshot'};
     }
 
-    shouldComponentUpdate(nextProps, prevState){
-        console.log('[Persons.js] getSnashotBeforeUpdate')
-    }
-
-    componentDidUpdate() {
+    componentDidUpdate(prevProps, prevState, snapshot) {
         console.log('[Persons.js] componentDidUpdate'); 
+        console.log(snapshot);
+    }
+
+    componentWillUnmount(){
+        console.log('[Persons.js] componentWillUnmount');
     }
     render () {
         console.log('[Persons.js] rendering...')
@@ -24,7 +43,9 @@ class Persons extends Component {
             name={person.name} 
             age={person.age} 
             key={person.id}
-            changed={(event) => this.props.changed(event, person.id)} />
+            changed={(event) => this.props.changed(event, person.id)}
+            isAuth={this.props.isAuthenticated}
+            />
         );
     });
     }
